@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project  xmlns="http://maven.apache.org/POM/4.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.sf.j2ep</groupId>
+  <artifactId>j2ep</artifactId>
+  <version>2.0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.debug>false</maven.compiler.debug>
+    <maven.compiler.optimize>true</maven.compiler.optimize>
+    <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+    <maven.main.skip>true</maven.main.skip>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.0-rc3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-digester</groupId>
+      <artifactId>commons-digester</artifactId>
+      <version>1.7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>catalina-ant</artifactId>
+      <version>6.0.53</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>cactus</groupId>
+      <artifactId>cactus</artifactId>
+      <version>13-1.7.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>${project.basedir}/src</sourceDirectory>
+    <outputDirectory>${project.basedir}/WEB-INF/classes</outputDirectory>
+
+    <plugins>      
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-external-libs</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>compile</includeScope>
+              <excludeArtifactIds>
+                commons-beanutils
+              </excludeArtifactIds>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-external-libs-without-version</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>compile</includeScope>
+              <stripVersion>true</stripVersion>
+              <includeArtifactIds>
+                commons-beanutils
+              </includeArtifactIds>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-external-libs-test</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>test</includeScope>
+              <excludeTransitive>true</excludeTransitive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-external-libs-provided</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>provided</includeScope>
+              <stripVersion>true</stripVersion>
+              <excludeTransitive>true</excludeTransitive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="dist.home" value="${project.basedir}/target" />
+                <ant antfile="build.xml">
+                  <target name="clean"/>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="app.version" value="${project.version}" />
+                <property name="external.libs" value="${project.basedir}/target/dependency/" />
+                <property name="dist.home" value="${project.basedir}/target" />
+                <property name="compile.source" value="${maven.compiler.source}" />
+                <property name="compile.target" value="${maven.compiler.target}" />
+                <property name="compile.debug" value="${maven.compiler.debug}" />
+                <property name="compile.deprecation" value="${maven.compiler.showDeprecation}" />
+                <property name="compile.optimize" value="${maven.compiler.optimize}" />
+                <ant antfile="build.xml">
+                  <target name="release"/>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

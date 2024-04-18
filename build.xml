@@ -43,6 +43,8 @@
     <property name="reports.test"           value="${basedir}/testreports"/>
     <property name="manager.url"            value="${server.url}/manager"/>
 
+    <property name="compile.source"         value="1.4"/>
+    <property name="compile.target"         value="1.4"/>
     <property name="compile.debug"          value="true"/>
     <property name="compile.deprecation"    value="false"/>
     <property name="compile.optimize"       value="true"/>
@@ -88,7 +90,7 @@
 
         <!-- Compile Java classes -->
         <mkdir dir="${build.home}" />
-        <javac source="1.4" target="1.4" srcdir="${src.home}" destdir="${build.home}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
+        <javac source="${compile.source}" target="${compile.target}" srcdir="${src.home}" destdir="${build.home}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}">
             <classpath refid="compile.classpath" />
         </javac>
 
